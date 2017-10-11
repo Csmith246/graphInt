@@ -9,11 +9,37 @@
         <p>Configure the Display by choosing 2 attributes!</p>
       </div>
       <div class="row">
-        <form>
-          <input type='select' name='attr1' placeholder="X-axis"/>
+        <form #myForm="ngForm" (ngSubmit)="setAxes(myForm)">
+          <label>X-Axis</label>
+          <select name='x-axis' id="select1" ngModel>
+            <option value="None"></option>
+            <option value="Price">Price</option>
+            <option value="Hard Drive Capacity">Hard Drive Capacity</option>
+            <option value="Processor Speed">Processor Speed</option>
+            <option value="System Memory(RAM)">System Memory(RAM)</option>
+            <option value="Battery Life">Battery Life</option>
+            <option value="Screen Size">Screen Size</option>
+            <option value="Height">Height</option>
+            <option value="Width">Width</option>
+            <option value="Depth">Depth</option>
+            <option value="Weight">Weight</option>
+          </select>
           <span>X</span>
-          <input type='select' name='attr2' placeholder="Y-axis"/>
-          <input type='submit' value="GO!" routerLink='/main-page'/>
+          <label>Y-Axis</label>
+          <select name='y-axis' id="select2" ngModel>
+              <option value="None"></option>
+              <option value="Price">Price</option>
+              <option value="Hard Drive Capacity">Hard Drive Capacity</option>
+              <option value="Processor Speed">Processor Speed</option>
+              <option value="System Memory(RAM)">System Memory(RAM)</option>
+              <option value="Battery Life">Battery Life</option>
+              <option value="Screen Size">Screen Size</option>
+              <option value="Height">Height</option>
+              <option value="Width">Width</option>
+              <option value="Depth">Depth</option>
+              <option value="Weight">Weight</option>
+            </select>
+          <button type="submit">Go!</button>
         </form>
       </div>
     </div>

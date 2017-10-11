@@ -1,15 +1,39 @@
 <div class="row">
-  <form action="">
+  <form #myForm="ngForm" (ngSubmit)="setAxes(myForm)">
     <div class="row">
       <label for="">X</label>
-      <input name='x-axis' placeholder="x-axis" type="select">
+      <select value="Price" name='x-axis' id="select1" ngModel>
+          <option value="None"></option>
+          <option value="Price">Price</option>
+          <option value="Hard Drive Capacity">Hard Drive Capacity</option>
+          <option value="Processor Speed">Processor Speed</option>
+          <option value="System Memory(RAM)">System Memory(RAM)</option>
+          <option value="Battery Life">Battery Life</option>
+          <option value="Screen Size">Screen Size</option>
+          <option value="Height">Height</option>
+          <option value="Width">Width</option>
+          <option value="Depth">Depth</option>
+          <option value="Weight">Weight</option>
+        </select>
     </div>
     <div class="row">
         <label for="">Y</label>
-        <input name='y-axis' placeholder="y-axis" type="select">
+        <select name='y-axis' id="select2" ngModel>
+            <option value="None"></option>
+            <option value="Price">Price</option>
+            <option value="Hard Drive Capacity">Hard Drive Capacity</option>
+            <option value="Processor Speed">Processor Speed</option>
+            <option value="System Memory(RAM)">System Memory(RAM)</option>
+            <option value="Battery Life">Battery Life</option>
+            <option value="Screen Size">Screen Size</option>
+            <option value="Height">Height</option>
+            <option value="Width">Width</option>
+            <option value="Depth">Depth</option>
+            <option value="Weight">Weight</option>
+          </select>
     </div>
     <div class="row justify-content-center">
-      <button class="btn btn-submit">Update!</button>
+      <button type="submit" class="btn btn-submit">Update!</button>
     </div>
   </form>
 </div>

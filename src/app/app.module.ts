@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 //Components
 import { AppComponent } from './app.component';
@@ -12,6 +13,7 @@ import { CanvasComponent } from './canvas/canvas.component';
 
 //Services
 import { ProductsService } from './services/products.service';
+import { AxesService } from './services/axes.service';
 
 const appRoutes :Routes = [
   {path : '', component : LandingPageComponent},
@@ -32,9 +34,13 @@ const appRoutes :Routes = [
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    FormsModule
   ],
-  providers: [ProductsService],
+  providers: [
+    ProductsService,
+    AxesService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
