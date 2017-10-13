@@ -10,17 +10,26 @@ export class ProductsService {
 
   productArray;  
 
+  subject = new Rx.Subject();
+
   constructor() {
   }
-
   
   getFromDB(){
-    var db = new PouchDB('http://localhost:5984/laptopdataresampled')//laptopdataresampled');
+    var db = new PouchDB('http://localhost:5984/testdataforgraphint')//laptopdataresampled');
 
     return Rx.Observable.fromPromise(db.allDocs({
       include_docs: true
     }));
 
+  }
+
+  getComm(){
+    return this.subject;
+  }
+
+  updateAttrs(name:string){
+    this.subject.next(name);
   }
 
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AxesService } from '../services/axes.service';
+import { ProductsService } from '../services/products.service';
+import * as Rx from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,6 +12,7 @@ import { AxesService } from '../services/axes.service';
 export class SidebarComponent implements OnInit {
 
   constructor(
+    public ps:ProductsService,
     public axs:AxesService,
     public router:Router
   ) { }
@@ -30,6 +33,9 @@ export class SidebarComponent implements OnInit {
       //this.router.navigate(["/main-page"]);
       this.axs.isUpdated(true);
     }
+
+    // Let Service know that attributes have been updated
+    this.ps.updateAttrs("sidebar update");
   }
 
   isSelected(){

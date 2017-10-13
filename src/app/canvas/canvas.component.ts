@@ -7,15 +7,18 @@
 /*
 TODO:
 1. Get the attribute inputs all set up
-  - need to figure out how to get the selected attributes out of the forms
-  - need ot make a data service to track currently selected attributes
+  - need to figure out how to get the selected attributes out of the forms 
 
 
 2. Have on the sidebar, ordinal attributes, (also probably scale attributes as well)
 3. Work on abstracting the code for the graph right now to accept any 2 attributes
     3b. What to do when ? is a value for one of the attr
 4. Work on binning and then on the product selection overlays that come up when bins are clicked on
-5. 
+
+
+
+Revised TODO:
+1. 
 */
 
 
@@ -41,6 +44,8 @@ export class CanvasComponent implements OnInit {
     ps:ProductsService,
     axs:AxesService
   ) {
+
+    // Get initial data, prep it and setup Canvas
     ps.getFromDB().subscribe(item => {
     //  console.log("In the observable");
     //  console.log(item);
@@ -59,11 +64,28 @@ export class CanvasComponent implements OnInit {
       // _F because need to format properly to retrieve formatted vals in canvas
       this.setupCanvas(this.axes["x-axis"] + "_F", this.axes["y-axis"] + "_F");
     });
+
+
+    // When attributes updated
+    ps.getComm().subscribe(
+      (val)=>{
+        console.log("Update done: " + val);
+        this.axes = axs.getAxes();
+        
+        // Need to remove old svg //
+        var canvas = document.getElementById("canvas")
+        canvas.removeChild(canvas.firstChild);
+        
+        this.setupCanvas(this.axes["x-axis"] + "_F", this.axes["y-axis"] + "_F");
+      }
+    );
   }
 
   ngOnInit() {
     //this.setupCanvas();
   }
+
+  
 
 
   prepAttribute(attr:String){
@@ -104,8 +126,8 @@ export class CanvasComponent implements OnInit {
       // console.log(temp_prod["System Memory(RAM)_F"]);
       // console.log(temp_prod["Battery Life_F"]);
       // console.log(temp_prod["Screen Size_F"]);
-      console.log(temp_prod["Height"]);
-      console.log(temp_prod["Height_F"]);
+      //console.log(temp_prod["Height"]);
+      //console.log(temp_prod["Height_F"]);
       // console.log(temp_prod["Width_F"]);
       // console.log(temp_prod["Depth_F"]);
       // console.log(temp_prod["Weight_F"]);
@@ -122,7 +144,7 @@ export class CanvasComponent implements OnInit {
     var elem = "#canvas";
     
     var props = {
-      width: 700,
+      width: 850,
       height: 500,
       class: "timeline-point",
     
@@ -135,7 +157,7 @@ export class CanvasComponent implements OnInit {
       axisBuffer: 40,
     
       // data inputs
-      data: this.prodArray,
+      data: this.prodArray, // MIGHT NEED TO ABSTRACT THIS TO DO PRODUCT SUBSETS
     
       // y label
       yLabel: "",
