@@ -18,7 +18,10 @@ TODO:
 
 
 Revised TODO:
-1. 
+1. Bining
+following 2 need to be done simulatously
+2a. Product selection overlay
+2b. Brush select
 */
 
 
@@ -165,7 +168,21 @@ export class CanvasComponent implements OnInit {
     
       // axis ticks
       xTicks: 10,
-      yTicks: 10
+      yTicks: 10,
+
+      pointFill:"#000000",
+
+      popup:{
+        width:130,
+        height:90,
+        xOffset:()=>{
+          return 130/2;
+        },
+        yOffset:()=>{
+          return 100+10;
+        },
+        isInside: false
+      }
     }
     
     // component start
@@ -184,21 +201,21 @@ export class CanvasComponent implements OnInit {
           .attr('width', props.width)
           .attr('height', props.height);
     
-      var g = svg.append('g')
+      var gP = svg.append('g')
           .attr('class', 'point-container')
           .attr("transform",
                   "translate(" + props.marginLeft + "," + props.marginTop + ")");
     
-      var g = svg.append('g')
+      var gL = svg.append('g')
           .attr('class', 'line-container')
           .attr("transform", 
                   "translate(" + props.marginLeft + "," + props.marginTop + ")");
     
-      var xAxis = g.append('g')
+      var xAxis = gL.append('g')
         .attr("class", "x axis")
         .attr("transform", "translate(0," + (props.height - props.marginTop - props.marginBottom) + ")");
     
-      var yAxis = g.append('g')
+      var yAxis = gL.append('g')
         .attr("class", "y axis");
     
       svg.append("text")
@@ -211,7 +228,7 @@ export class CanvasComponent implements OnInit {
         .text(props.yLabel);
     
       // add placeholders for the axes
-      this.update(elem, props);
+      this.update(elem, props, {svg:svg, x:xAxis, y:yAxis, gP:gP});
     };
     
     /***
@@ -220,10 +237,37 @@ export class CanvasComponent implements OnInit {
     *
     ***/
     
-    Timeline.update = function(elem, props) {
+    Timeline.update = function(elem, props, components) {
       var self = this;
       var domain = self.getDomain(props, currX, currY);// PUT THE X AND Y ATTRIBUTES IN HERE
       var scales = self.scales(elem, props, domain);
+
+      //Setup Zoom behavior////////
+      var zoom = d3.zoom()
+      .scaleExtent([1, 5])
+      .translateExtent([[-5, -5], [props.width, props.height]]) // height is signifcantly larger than actual graph
+      .on("zoom", zoomed);
+
+      // update the axes///////////////
+      var axes = this.axes(props, scales);
+      d3.select(elem).selectAll('g.x.axis')
+        .call(axes.xAxis);
+    
+      d3.select(elem).selectAll('g.y.axis')
+        .call(axes.yAxis);
+
+        ///////////////////
+
+
+      components.svg.call(zoom);
+
+      function zoomed() {
+        components.gP.attr("transform", d3.event.transform);
+        components.x.call(axes.xAxis.scale(d3.event.transform.rescaleX(scales.x)));
+        components.y.call(axes.yAxis.scale(d3.event.transform.rescaleY(scales.y)));
+      }
+
+      ////////////////////////
     
       self.drawPoints(elem, props, scales);
     };
@@ -334,25 +378,103 @@ export class CanvasComponent implements OnInit {
         .append("circle")
           .attr("class", "point")
           .on('mouseover', function(d) {
+            props["isInside"+d["_id"]] = false;
             // console.log("In mouseover function");
             d3.select(elem).selectAll(".point").classed("active", false);
-            d3.select(this).classed("active", true);
+            var selection = d3.select(this);
+            selection.classed("active", true);
             console.log("IN mouseover");
+            console.log(d);
+            console.log(selection);
+            console.log(props.popup.xOffset());
+            console.log(props.popup.yOffset());
+
+            g.append("rect")
+              .attr("class","popup"+d["_id"])
+              .attr("id","test")
+              .attr("x", selection._groups[0][0].attributes[1].value - props.popup.xOffset())//-11)
+              .attr("y", selection._groups[0][0].attributes[2].value - props.popup.yOffset())//-28)
+              .attr("width", props.popup.width)
+              .attr("height", props.popup.height)
+              .attr("fill","white")
+              .attr("stroke","#000");
+ //             .on("mouseover", function(){
+ //               props["isInside"+d["_id"]] = true;
+ //               console.log("In mouseover popup");
+ //             })
+ //             .on("mouseout", function(){
+ //               console.log("In mouseout Popup");
+ //               props["isInside"+d["_id"]] = false;
+                // setTimeout(function(){
+                //   console.log("In settime b4 if");
+                //   if (!props["isInside"+d["_id"]]) {
+                //     console.log("In settime after if");
+                //     d3.selectAll(".popup"+d["_id"]).remove();
+                //   };
+                // }, 500);
+ //             });
+
+            g.append("rect")
+              .attr("width",75)
+              .attr("height",75)
+              .attr("class","popup"+d["_id"])
+              .attr("x",selection._groups[0][0].attributes[1].value - props.popup.xOffset()+25)
+              .attr("y",selection._groups[0][0].attributes[2].value - props.popup.yOffset()+1)
+              .style("fill", function() {
+                //Fills point with URL image
+                if (d.imageURLs) {
+                  console.log(d["_id"]);
+                  return ("url(#" + d["_id"] + ")");
+                }
+              });
+              // .on("mouseover", function(){
+              //   props["isInside"+d["_id"]] = true;
+              //   console.log("In mouseover popup");
+              // });
+            
+            g.append("text")
+              .attr("class","popup"+d["_id"])
+              .attr("x", selection._groups[0][0].attributes[1].value - props.popup.xOffset() + 10)
+              .attr("y", selection._groups[0][0].attributes[2].value - props.popup.yOffset() + 75)
+              .attr("font-size", 7)
+              .text(currX.substr(0,currX.length-2) + ": " + d[currX.substr(0,currX.length-2)]);
+              // .on("mouseover", function(){
+              //   props["isInside"+d["_id"]] = true;
+              //   console.log("In mouseover popup");
+              // });
+            
+            g.append("text")
+              .attr("class","popup"+d["_id"])
+              .attr("x", selection._groups[0][0].attributes[1].value - props.popup.xOffset() + 10)
+              .attr("y", selection._groups[0][0].attributes[2].value - props.popup.yOffset() + 85)
+              .attr("font-size", 7)
+ //             .attr("textLength", "70px")
+              .text(currY.substr(0,currY.length-2) + ": " + d[currY.substr(0,currY.length-2)]);
+              // .on("mouseover", function(){
+              //   props["isInside"+d["_id"]] = true;
+              //   console.log("In mouseover popup");
+              // });
+
             if (props.onMouseover) {
               props.onMouseover(d)
             };
           })
           .on('mouseout', function(d) {
-            if (props.onMouseout) {
-              props.onMouseout(d)
-            };
+            setTimeout(function(){
+              console.log("In settime b4 if");
+             // if (!props["isInside"+d["_id"]]) {
+                console.log("In settime after if");
+                d3.selectAll(".popup"+d["_id"]).remove();
+                //clearInterval(interval);
+              //}
+            }, 500);
           })
           .attr("cx", function(d) {
             // console.log("In cx positioning function");
             var xTemp = d[currX];
-            console.log("xTemp: " + xTemp);
+            //console.log("xTemp: " + xTemp);
             var xPos = scales.x(xTemp);//d.y); 
-            console.log("xPos: " + xPos);
+            //console.log("xPos: " + xPos);
             if (isNaN(xPos)){
               return scales.x(300);
             }else{
@@ -370,7 +492,7 @@ export class CanvasComponent implements OnInit {
               return yPos;
             }
           })
-          .attr("r", 30)
+          .attr("r", 2)
           .style("stroke", function(d) {
             if (props.pointStroke) {
               return d.color = props.pointStroke;
@@ -379,70 +501,24 @@ export class CanvasComponent implements OnInit {
             }
           })
           .style("fill", function(d) {
-  
-            // console.log("In filling function");
-  
-            if (d.imageURLs) {
+            //Fills point with URL image
+            /*if (d.imageURLs) {
               // console.log(d["_id"]);
               return ("url(#" + d["_id"] + ")");
-            }
+            }*/
   
             if (props.pointFill) {
+              console.log("pointFill is defined");
               return d.color = props.pointFill;
-            } else {
-              return d.color = color(d.key);
             }
+            //} else {
+            //  return d.color = color(d.key);
+            //}
           });
-        
-      console.log("Before transition function");
-    
-      // enter and update
-      // point.transition()
-      //   .duration(1000)
-      //   .attr("cx", function(d) {
-      //     console.log("In cx positioning function");
-      //     return scales.x(300);//d.x); 
-      //   })
-      //   .attr("cy", function(d) { 
-      //     return scales.y(5);//d.y); 
-      //   })
-      //   .attr("r", 30)
-      //   .style("stroke", function(d) {
-      //     if (props.pointStroke) {
-      //       return d.color = props.pointStroke;
-      //     } else {
-      //       return d.color = color(d.key);
-      //     }
-      //   })
-      //   .style("fill", function(d) {
-
-      //     console.log("In filling function");
-
-      //     if (d.imageURLs) {
-      //       console.log(d["_id"]);
-      //       return ("url(#" + d["_id"] + ")");
-      //     }
-
-      //     if (props.pointFill) {
-      //       return d.color = props.pointFill;
-      //     } else {
-      //       return d.color = color(d.key);
-      //     }
-      //   });
     
       // exit
       point.exit()
         .remove();
-      
-      
-    
-      // update the axes
-      var axes = this.axes(props, scales);
-      d3.select(elem).selectAll('g.x.axis')
-        .call(axes.xAxis);
-    
-      d3.select(elem).selectAll('g.y.axis')
-        .call(axes.yAxis);
     };
     
     // Start

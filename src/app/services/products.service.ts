@@ -16,7 +16,7 @@ export class ProductsService {
   }
   
   getFromDB(){
-    var db = new PouchDB('http://localhost:5984/testdataforgraphint')//laptopdataresampled');
+    var db = new PouchDB('http://localhost:5984/laptopdataresampled');///testdataforgraphint
 
     return Rx.Observable.fromPromise(db.allDocs({
       include_docs: true
