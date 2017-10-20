@@ -9,13 +9,16 @@ import { AxesService } from '../services/axes.service';
 })
 export class LandingPageComponent implements OnInit {
 
+
   constructor(
     public axs:AxesService,
     public router:Router
   ) { }
 
+
   ngOnInit() {
   }
+
 
 /* Takes myForm from ng-form in HTML. This function takes the selection of the
   two axes from the select boxes and passes them on to be used. Also routes to the main-page.*/
@@ -33,4 +36,5 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
+  
 }

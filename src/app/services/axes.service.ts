@@ -5,9 +5,14 @@ export class AxesService {
 
   updated:Boolean = false;
 
-  Axes = {
-    'x-axis': null,
-    'y-axis': null
+//   Axes = {
+//     'x-axis': null,
+//     'y-axis': null
+// }
+
+Axes = {
+  'x-axis': "Price",
+  'y-axis': "Hard Drive Capacity"
 }
 
 

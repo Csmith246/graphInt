@@ -6,13 +6,13 @@
 
 /*
 TODO:
-1. Get the attribute inputs all set up
-  - need to figure out how to get the selected attributes out of the forms 
+  - need to figure out how to default main-page's select boxes to the values picked on landing page
 
 
 2. Have on the sidebar, ordinal attributes, (also probably scale attributes as well)
-3. Work on abstracting the code for the graph right now to accept any 2 attributes
-    3b. What to do when ? is a value for one of the attr
+
+3b. What to do when ? is a value for one of the attr
+
 4. Work on binning and then on the product selection overlays that come up when bins are clicked on
 
 
@@ -50,21 +50,14 @@ export class CanvasComponent implements OnInit {
 
     // Get initial data, prep it and setup Canvas
     ps.getFromDB().subscribe(item => {
-    //  console.log("In the observable");
-    //  console.log(item);
       this.products = item;
-      this.processProducts();
-      // var dataHolder:data = <data> item;
-      // var tempObjs: objData[] = <objData[]> dataHolder.products['rows'];
-      // for(var i=0; i<tempObjs.length; i++){
-      //   this.products.push(tempObjs[i].doc);
-      // }
+      this.processProducts(); 
       
       this.axes = axs.getAxes();
 
       console.log("Right before Canvas Setup");
 
-      // _F because need to format properly to retrieve formatted vals in canvas
+      // _F because need to format this parameter input properly to retrieve formatted vals in subsequent functions
       this.setupCanvas(this.axes["x-axis"] + "_F", this.axes["y-axis"] + "_F");
     });
 
@@ -85,12 +78,9 @@ export class CanvasComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.setupCanvas();
   }
 
-  
-
-
+/* Helper for processProducts */
   prepAttribute(attr:String){
     if(!isNaN(parseFloat(attr.substring(0,1)))){ // if 1st char coerced to number is not NaN 
       return parseFloat(attr.split(" ")[0]);
@@ -101,13 +91,10 @@ export class CanvasComponent implements OnInit {
     }
   }
 
-
   processProducts(){
     var prodTemp = this.products.rows;
 
-    //PREP INMPORTANT DATA ATTRIBUTES HERE AND STORE THEM IN NEW PROPERTIES TO USE IN SCALING
-
-
+    //PREP IMPORTANT DATA ATTRIBUTES HERE AND STORE THEM IN NEW PROPERTIES TO USE
     for(var i=0; i<prodTemp.length; i++){
       var temp_prod = prodTemp[i].doc;
       
