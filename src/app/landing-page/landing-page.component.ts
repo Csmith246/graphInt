@@ -17,6 +17,8 @@ export class LandingPageComponent implements OnInit {
   ngOnInit() {
   }
 
+/* Takes myForm from ng-form in HTML. This function takes the selection of the
+  two axes from the select boxes and passes them on to be used. Also routes to the main-page.*/
   setAxes(myForm){
     console.log(myForm.value["x-axis"]);
     console.log(myForm.value["y-axis"]);

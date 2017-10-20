@@ -20,9 +20,15 @@
       "prefix": "app",
       "styles": [
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+        "../node_modules/bootstrap-select/dist/css/bootstrap-select.min.css",
         "styles.css"
       ],
-      "scripts": ["../node_modules/d3/build/d3.js",
+      "scripts": [
+        "../node_modules/jquery/dist/jquery.min.js",
+        "../node_modules/tether/dist/js/tether.js",
+        "../node_modules/bootstrap/dist/js/bootstrap.js",
+        "../node_modules/bootstrap-select/dist/js/bootstrap-select.min.js",
+        "../node_modules/d3/build/d3.js",
         "../node_modules/pouchdb/dist/pouchdb.js"
       ],
       "environmentSource": "environments/environment.ts",

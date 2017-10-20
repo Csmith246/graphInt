@@ -1,0 +1,39 @@
+
+.styleSelect select {
+    background: transparent;
+    width: 250px;
+    padding: 5px;
+    font-size: 16px;
+    line-height: 1;
+    border: 0;
+    border-radius: 0;
+    height: 34px;
+    -webkit-appearance: none;
+    color: #000;
+  }
+  
+  .styleSelect {
+    width: 250px;
+    height: 34px;
+    overflow: hidden;
+    background: url("../../assets/down-arrow.png") no-repeat 95% 50% #fff;
+    border: 1px solid #000;
+  }
+
+
+  .spacer{
+      margin-top:20px;
+  }
+
+  .spacer-btn{
+    margin-top:40px;
+}
+
+titlePic{
+    width:144px;
+    height:150px;
+}
+
+right{
+    float: right;
+}
