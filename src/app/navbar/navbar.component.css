@@ -1,3 +1,23 @@
-.navbar-nav li a {
+/* .navbar-nav li a {
     line-height: 50px;
-   }
+   } */
+
+
+/* Done to override the behavior in 
+the bootstrap nav-bar to block display 
+for the links. This makes it all inline. */
+.navbar-brand{
+    display:inline;
+}
+
+.navbar-nav{
+    display:inline;
+}
+
+.nav-item{
+    display:inline;
+}
+
+.nav-link{
+    display:inline;
+}
