@@ -3,3 +3,28 @@
     text-decoration: underline;
     font: bold;
 }
+
+.styleSelect select {
+    background: transparent;
+    width: 270px;
+    padding: 5px;
+    font-size: 16px;
+    line-height: 1;
+    border: 0;
+    border-radius: 0;
+    height: 34px;
+    -webkit-appearance: none;
+    color: #000;
+  }
+  
+  .styleSelect {
+    width: 270px;
+    height: 34px;
+    overflow: hidden;
+    background: url("../../assets/down-arrow.png") no-repeat 95% 50% #fff;
+    border: 1px solid #000;
+  }
+
+  .sm-spacer{
+      padding-top:10px;
+  }

@@ -1,61 +1,91 @@
-<div class="row">
+<div class="container">
+
   <form #myForm="ngForm" (ngSubmit)="setAxes(myForm)">
-    <div class="row">
-      <label for="">X</label>
-      <select value="Price" name='x-axis' id="select1" ngModel>
-          <option value="None"></option>
-          <option value="Price">Price</option>
-          <option value="Hard Drive Capacity">Hard Drive Capacity</option>
-          <option value="Processor Speed">Processor Speed</option>
-          <option value="System Memory(RAM)">System Memory(RAM)</option>
-          <option value="Battery Life">Battery Life</option>
-          <option value="Screen Size">Screen Size</option>
-          <option value="Height">Height</option>
-          <option value="Width">Width</option>
-          <option value="Depth">Depth</option>
-          <option value="Weight">Weight</option>
-        </select>
+
+    <div class="row justify-content-center sm-spacer">
+      <h6>X-Axis</h6>
     </div>
-    <div class="row">
-        <label for="">Y</label>
-        <select name='y-axis' id="select2" ngModel>
-            <option value="None"></option>
-            <option value="Price">Price</option>
-            <option value="Hard Drive Capacity">Hard Drive Capacity</option>
-            <option value="Processor Speed">Processor Speed</option>
-            <option value="System Memory(RAM)">System Memory(RAM)</option>
-            <option value="Battery Life">Battery Life</option>
-            <option value="Screen Size">Screen Size</option>
-            <option value="Height">Height</option>
-            <option value="Width">Width</option>
-            <option value="Depth">Depth</option>
-            <option value="Weight">Weight</option>
-          </select>
+
+    <div class="row styleSelect">
+      <select name='x-axis' id="select1" class="selectBox" ngModel>
+        <option value="Price">Price</option>
+        <option value="Hard Drive Capacity">Hard Drive Capacity</option>
+        <option value="Processor Speed">Processor Speed</option>
+        <option value="System Memory(RAM)">System Memory(RAM)</option>
+        <option value="Battery Life">Battery Life</option>
+        <option value="Screen Size">Screen Size</option>
+        <option value="Height">Height</option>
+        <option value="Width">Width</option>
+        <option value="Depth">Depth</option>
+        <option value="Weight">Weight</option>
+      </select>
     </div>
-    <div class="row justify-content-center">
+
+    <div class="row justify-content-center sm-spacer">
+      <h6>Y-Axis</h6>
+    </div>
+
+    <div class="row styleSelect">
+      <select name='y-axis' id="select2" class="selectBox" ngModel>
+        <option value="Price">Price</option>
+        <option value="Hard Drive Capacity">Hard Drive Capacity</option>
+        <option value="Processor Speed">Processor Speed</option>
+        <option value="System Memory(RAM)">System Memory(RAM)</option>
+        <option value="Battery Life">Battery Life</option>
+        <option value="Screen Size">Screen Size</option>
+        <option value="Height">Height</option>
+        <option value="Width">Width</option>
+        <option value="Depth">Depth</option>
+        <option value="Weight">Weight</option>
+      </select>
+    </div>
+
+    <div class="row justify-content-center sm-spacer">
       <button type="submit" class="btn btn-submit">Update!</button>
     </div>
+
+
+    <h5 class = "sm-spacer">Price</h5>
+    Min Price:
+    <input type="text" name="Price Minimum"><br>
+    Max Price:
+    <input type="text" name="Price Maximum"><br>
+    
+    
+    <h5 class = "sm-spacer">Hard Drive Size</h5>
+    <input class="chkbox" type="checkbox" name="Hard Drive Capacity" value="less100"> Less than 100GB<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Capacity" value="100 - 299"> 100GB - 299GB<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Capacity" value="300 - 499"> 300GB - 499GB<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Capacity" value="500 - 749"> 500GB - 749GB<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Capacity" value="750 - 999"> 750GB - 999GB<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Capacity" value="1000 - 1900"> 1000GB - 1900GB<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Capacity" value="2000 - 2900"> 2000GB - 2900GB<br>
+    
+    <h5 class = "sm-spacer">Hard Drive Type</h5>
+    <input class="chkbox" type="checkbox" name="Hard Drive Type" value="Solid State Drive"> Solid State Drive<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Type" value="SATA + Solid State Drive"> SATA + Solid State Drive<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Type" value="SATA"> SATA<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Type" value="PCIe Solid State Drive"> PCIe Solid State Drive<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Type" value="Other"> Other<br>
+    <input class="chkbox" type="checkbox" name="Hard Drive Type" value="eMMC"> eMMC<br>			
+    
+    <h5 class = "sm-spacer">Processor Speed</h5>
+    <input class="chkbox" type="checkbox" name="Processor Speed" value="less1.5"> Less than 1.5 GHz<br>
+    <input class="chkbox" type="checkbox" name="Processor Speed" value="1.6 - 1.9"> 1.6 - 1.9GHz<br>
+    <input class="chkbox" type="checkbox" name="Processor Speed" value="2 - 2.9"> 2 - 2.9GHz<br>
+    <input class="chkbox" type="checkbox" name="Processor Speed" value="more3"> 3GHz or More<br>
+    
+    <!-- <h5 class = "sm-spacer">RAM</h5>
+    <input class="chkbox" type="checkbox" name="System Memory(RAM)" value="2"> 2 gigabytes<br>
+    <input class="chkbox" type="checkbox" name="System Memory(RAM)" value="4"> 4 gigabytes<br>
+    <input class="chkbox" type="checkbox" name="System Memory(RAM)" value="6"> 6 gigabytes<br>
+    <input class="chkbox" type="checkbox" name="System Memory(RAM)" value="8"> 8 gigabytes<br>
+    <input class="chkbox" type="checkbox" name="System Memory(RAM)" value="12"> 12 gigabytes<br>
+    <input class="chkbox" type="checkbox" name="System Memory(RAM)" value="16"> 16 gigabytes<br>
+    <input class="chkbox" type="checkbox" name="System Memory(RAM)" value="32"> 32 gigabytes<br>
+    <input class="chkbox" type="checkbox" name="System Memory(RAM)" value="64"> 64 gigabytes<br> -->
+    
+
   </form>
-</div>
 
-<div class="row">
-  <div class="title">Hard Drive Capacity</div>
-  <div class="choice">1-200GB</div>
-  <div class="choice">200-400GB</div>
-  <div class="choice">400-600GB</div>
-</div>
-
-<div class="row">
-    <div class="title">Processor Speed</div>
-    <div class="choice">0.5-1.5GHz</div>
-    <div class="choice">1.5-2.3GHz</div>
-    <div class="choice">2.3-3GHz</div>
-</div>
-
-
-<div class="row">
-    <div class="title">Price</div>
-    <div class="choice">1-200</div>
-    <div class="choice">200-400</div>
-    <div class="choice">400-600</div>
 </div>
