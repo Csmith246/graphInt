@@ -1,0 +1,26 @@
+{
+  "name": "ngx-modialog/plugins/vex",
+  "description": "Modal / Dialog for Angular",
+  "version": "3.0.4",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shlomiassaf/ngx-modialog.git"
+  },
+  "keywords": [
+    "angular",
+    "angular2",
+    "bootstrap",
+    "vex",
+    "modal"
+  ],
+  "author": "Shlomi Assaf",
+  "license": "MIT",
+  "homepage": "https://github.com/shlomiassaf/ngx-modialog",
+  "bugs": {
+    "url": "https://github.com/shlomiassaf/ngx-modialog/issues"
+  },
+  "main": "bundle/ngx-modialog-vex.rollup.umd.js",
+  "module": "bundle/ngx-modialog-vex.es5.js",
+  "es2015": "bundle/ngx-modialog-vex.js",
+  "typings": "src/ngx-modialog-vex.ng-flat.d.ts"
+}

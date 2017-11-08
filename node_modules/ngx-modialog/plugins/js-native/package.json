@@ -1,0 +1,26 @@
+{
+  "name": "ngx-modialog/plugins/js-native",
+  "description": "Modal / Dialog for Angular",
+  "version": "3.0.4",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shlomiassaf/ngx-modialog.git"
+  },
+  "keywords": [
+    "angular",
+    "angular2",
+    "bootstrap",
+    "vex",
+    "modal"
+  ],
+  "author": "Shlomi Assaf",
+  "license": "MIT",
+  "homepage": "https://github.com/shlomiassaf/ngx-modialog",
+  "bugs": {
+    "url": "https://github.com/shlomiassaf/ngx-modialog/issues"
+  },
+  "main": "bundle/ngx-modialog-js-native.rollup.umd.js",
+  "module": "bundle/ngx-modialog-js-native.es5.js",
+  "es2015": "bundle/ngx-modialog-js-native.js",
+  "typings": "src/ngx-modialog-js-native.ng-flat.d.ts"
+}

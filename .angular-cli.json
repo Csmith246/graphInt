@@ -26,10 +26,10 @@
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/tether/dist/js/tether.js",
-        "../node_modules/bootstrap/dist/js/bootstrap.js",
-        "../node_modules/bootstrap-select/dist/js/bootstrap-select.min.js",
         "../node_modules/d3/build/d3.js",
-        "../node_modules/pouchdb/dist/pouchdb.js"
+        "../node_modules/pouchdb/dist/pouchdb.js",
+        "../node_modules/bootstrap/dist/js/bootstrap.js",
+        "../node_modules/bootstrap-select/dist/js/bootstrap-select.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

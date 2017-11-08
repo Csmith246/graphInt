@@ -1,0 +1,89 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" (click)="close()">&times;</button>
+      <h4 class="modal-title">{{title || 'Confirm'}}</h4>
+    </div>
+    <div class="modal-body">
+      <!-- Form -->
+      <div class="row justify-content-center paddin">
+        <h2>Narrow Down Selection by Choosing 2 More Attributes</h2>
+        <div class="row">
+          <form #myForm="ngForm"><!-- (ngSubmit)="close(myForm)"> -->
+            <div class="row">
+              <div class="paddin">
+                <h4>X-Axis</h4>
+              </div>
+
+              <div class="styleSelect paddin">
+                <select name='x-axis' id="select1" class="selectBox" ngModel>
+                  <option value="Price">Price</option>
+                  <option value="Hard Drive Capacity">Hard Drive Capacity</option>
+                  <option value="Processor Speed">Processor Speed</option>
+                  <option value="System Memory(RAM)">System Memory(RAM)</option>
+                  <option value="Battery Life">Battery Life</option>
+                  <option value="Screen Size">Screen Size</option>
+                  <option value="Height">Height</option>
+                  <option value="Width">Width</option>
+                  <option value="Depth">Depth</option>
+                  <option value="Weight">Weight</option>
+                </select>
+              </div>
+
+              <div class="paddin">
+                <h4>Y-Axis</h4>
+              </div>
+
+              <div class="styleSelect paddin">
+                <select name='y-axis' id="select2" class="selectBox" ngModel>
+                  <option value="Price">Price</option>
+                  <option value="Hard Drive Capacity">Hard Drive Capacity</option>
+                  <option value="Processor Speed">Processor Speed</option>
+                  <option value="System Memory(RAM)">System Memory(RAM)</option>
+                  <option value="Battery Life">Battery Life</option>
+                  <option value="Screen Size">Screen Size</option>
+                  <option value="Height">Height</option>
+                  <option value="Width">Width</option>
+                  <option value="Depth">Depth</option>
+                  <option value="Weight">Weight</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block paddin" (click)="confirm(myForm)">Submit!</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4" *ngFor="let product of productList">
+          <div class="card">
+            <img class="card-img-top" id="cardImage" width="100%" src={{product._imageURLs}} alt="Card image cap">
+            <div class="card-block">
+              <h5 class="text-center">{{product["Price"]}}</h5>
+              <hr/>
+              <h4 class="card-title">{{product["Product Name"]}}</h4>
+              <hr/>
+              <!-- TODO: WOuld be nice if the values below with a ? value were not displayed -->
+              <p class="card-text">Hard Drive Capacity {{product["Hard Drive Capacity"]}}</p>
+              <p class="card-text">Hard Drive Type {{product["Hard Drive Type"]}}</p>
+              <p class="card-text">Operating System {{product["Operating System"]}}</p>
+              <p class="card-text">Processor Brand {{product["Processor Brand"]}}</p>
+              <p class="card-text">Processor Speed {{product["Processor Speed"]}}</p>
+              <p class="card-text">System Memory(RAM) {{product["System Memory(RAM)"]}}</p>
+              <p class="card-text">Screen Size {{product["Screen Size"]}}</p>
+              <div class="row justify-content-center">
+                <a href="#" class="btn btn-primary disabled">Add to Cart</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <!-- <button type="button" class="btn btn-primary" (click)="confirm()">OK</button>
+      <button type="button" class="btn btn-default" (click)="close()">Cancel</button> -->
+    </div>
+  </div>
+</div>

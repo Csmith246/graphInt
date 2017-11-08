@@ -7,7 +7,7 @@
 
   <div class="col-1 trans-down">
     <div class="rotated">
-      <h6>{{this.axes["y-axis"]}}</h6>
+      <h5>{{this.axes["y-axis"]}}</h5>
     </div>
   </div>
 
@@ -16,27 +16,33 @@
   </div>
 
 </div>
-<div class="row">
+<div class="row justify-content-center">
 
-  <div class="col-sm-8 trans-right">
-    <h6>{{this.axes["x-axis"]}}</h6>
-  </div>
+  <h5>{{this.axes["x-axis"]}}</h5>
 
 </div>
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+<!-- <button type="button" id="modalTrigger" (click)='openModal()' class="btn btn-primary" data-toggle="modal" data-target="#myModal">
   Launch demo modal
-</button>
+</button> -->
 
-<button type="button" id="brushToggle">Toggle Select</button>
+
+<div class="spacer-md"></div>
+
+<div class="row justify-content-center">
+  <div class="col-sm-6">
+    <button type="button" class="btn btn-primary btn-lg btn-block" id="brushToggle">Toggle Select</button>
+  </div>
+</div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog modal-xl" role="document">
+ 
+<!-- <div class="mymodal myfade" id="myModal">
+  <div class="mymodal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <h5 class="modal-title" id="myModalTitle">Modal title</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -50,4 +56,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

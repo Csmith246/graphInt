@@ -25,11 +25,17 @@ Revised TODO:
 
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import * as d3 from 'd3';
 import * as $ from 'jquery';
+//import * as b from 'bootstrap';
 import { ProductsService } from '../services/products.service';
 import { AxesService } from '../services/axes.service';
+import { DialogService } from "ng2-bootstrap-modal";
+import { ProductModalComponent } from '../product-modal/product-modal.component';
+//import { Overlay } from 'ngx-modialog';
+//import { Modal } from 'ngx-modialog/plugins/bootstrap';
+
 
 @Component({
   selector: 'app-canvas',
@@ -42,13 +48,17 @@ export class CanvasComponent implements OnInit {
   prodArray: Array<Object> = [];
   axes;
 
-  tempArr:string[] = "yoloswaggins is the best".split(" ");
-  num:number = this.tempArr[this.tempArr.length-1].length;
+  currSelected = [];
+
+  
+
   constructor(
-    ps: ProductsService,
-    axs: AxesService
+    public ps: ProductsService,
+    public axs: AxesService,
+    public dialogService:DialogService
   ) {
-    console.log(this.num);
+
+
     // Get initial data, prep it and setup Canvas
     ps.getFromDB().subscribe(item => {
       this.products = item;
@@ -56,26 +66,71 @@ export class CanvasComponent implements OnInit {
 
       this.axes = axs.getAxes();
 
-      console.log("Right before Canvas Setup");
+      //console.log("Right before Canvas Setup");
+
+      //console.log(this);
 
       // _F because need to format this parameter input properly to retrieve formatted vals in subsequent functions
-      this.setupCanvas(this.axes["x-axis"] + "_F", this.axes["y-axis"] + "_F", this.prodArray);
+      this.setupCanvas(this.axes["x-axis"] + "_F", this.axes["y-axis"] + "_F", this.prodArray, this);
     });
 
 
     // Listener for when axis attributes or constraints updated
     ps.getComm().subscribe(
       (val) => {
-        console.log("Update done: " + val);
+        //console.log("Update done: " + val);
         this.axes = axs.getAxes();
 
         // Need to remove old svg //
         var canvas = document.getElementById("canvas")
         canvas.removeChild(canvas.firstChild);
 
-        this.setupCanvas(this.axes["x-axis"] + "_F", this.axes["y-axis"] + "_F", this.prodArray); // CHG PRODARRAY HERE to abstract
+        
+
+        this.setupCanvas(this.axes["x-axis"] + "_F", this.axes["y-axis"] + "_F", this.prodArray, this); // CHG PRODARRAY HERE to abstract
       }
     );
+
+
+  }
+
+  setupModal(){
+    //console.log("IN SETUP MODAL");
+    //console.log(this.currSelected);
+  }
+
+  /* Opens the modal and responds properly to the result received from modal */
+  openModal(products, context){
+
+    //Disables Scrolling on the html and body
+    // $('html, body').css({
+    //   overflow: 'hidden',
+    //   height: '100%'
+    // });
+
+    let disposable = this.dialogService.addDialog(ProductModalComponent, {
+      title:'Selected Laptops', 
+      message:'Confirm message',
+      productList:products
+    })
+      .subscribe((res)=>{
+          //console.log(res);
+          //console.log(products);
+          console.log(context);
+
+          //Remove current svg, if 2 new attributes were picked
+          if(res !== undefined){
+            var canvas = document.getElementById("canvas")
+            canvas.removeChild(canvas.firstChild);
+
+            // Update axes
+            context.axes["x-axis"] = res[0];
+            context.axes["y-axis"] = res[1];
+
+            // Setup canvas
+            context.setupCanvas(res[0], res[1], products, context);
+          }
+      });   
   }
 
   ngOnInit() {
@@ -109,27 +164,28 @@ export class CanvasComponent implements OnInit {
       temp_prod["Width_F"] = this.prepAttribute(temp_prod["Width"]);
       temp_prod["Depth_F"] = this.prepAttribute(temp_prod["Depth"]);
       temp_prod["Weight_F"] = this.prepAttribute(temp_prod["Weight"]);
+      temp_prod["_imageURLs"] = temp_prod["imageURLs"].split("@")[1];
 
 
-      // console.log(temp_prod["Price_F"]);
-      // console.log(temp_prod["Hard Drive Capacity_F"]);
-      // console.log(temp_prod["Processor Speed_F"]);
-      // console.log(temp_prod["System Memory(RAM)_F"]);
-      // console.log(temp_prod["Battery Life_F"]);
-      // console.log(temp_prod["Screen Size_F"]);
-      //console.log(temp_prod["Height"]);
-      //console.log(temp_prod["Height_F"]);
-      // console.log(temp_prod["Width_F"]);
-      // console.log(temp_prod["Depth_F"]);
-      // console.log(temp_prod["Weight_F"]);
+      // //console.log(temp_prod["Price_F"]);
+      // //console.log(temp_prod["Hard Drive Capacity_F"]);
+      // //console.log(temp_prod["Processor Speed_F"]);
+      // //console.log(temp_prod["System Memory(RAM)_F"]);
+      // //console.log(temp_prod["Battery Life_F"]);
+      // //console.log(temp_prod["Screen Size_F"]);
+      ////console.log(temp_prod["Height"]);
+      ////console.log(temp_prod["Height_F"]);
+      // //console.log(temp_prod["Width_F"]);
+      // //console.log(temp_prod["Depth_F"]);
+      // //console.log(temp_prod["Weight_F"]);
 
 
       this.prodArray.push(temp_prod);
     }
-    console.log(this.prodArray);
+    //console.log(this.prodArray);
   }
 
-  setupCanvas = function (currX, currY, currProds) {
+  setupCanvas = function (currX, currY, currProds, context) {
 
     // container target
     var elem = "#canvas";
@@ -139,8 +195,8 @@ export class CanvasComponent implements OnInit {
     var width = canvasCont.clientWidth;
     var height = canvasCont.clientHeight;
 
-    console.log(width);
-    console.log(height);
+    //console.log(width);
+    //console.log(height);
 
     var props = {
       width: width - 175,
@@ -225,6 +281,8 @@ export class CanvasComponent implements OnInit {
         .text(props.yLabel);
 
       // add placeholders for the axes
+
+
       this.update(elem, props, { svg: svg, x: xAxis, y: yAxis, gP: gP });
     };
 
@@ -236,7 +294,8 @@ export class CanvasComponent implements OnInit {
 
     Timeline.update = function (elem, props, components) {
       var self = this;
-      var domain = self.getDomain(props, currX, currY);
+      var domain = self.getDomain(props, currX.substring(currX.length-2)!=='_F' ? currX + '_F' : currX,
+       currY.substring(currY.length-2)!=='_F' ? currY + '_F' : currY); // Need to make sure that _F version gets passed
       var scales = self.scales(elem, props, domain);
 
       //Setup Zoom behavior////////
@@ -264,25 +323,19 @@ export class CanvasComponent implements OnInit {
 
       var brush = d3.brush()
         .on("start", brushstart)
-        .on("brush",brushing)
         .on("end", brushended);
 
       function brushstart(){
-        console.log("IN BRUSHSTART");
-        console.log(d3.event);
+        //console.log("IN BRUSHSTART");
+        //console.log(d3.event);
         brush_p1 = [d3.event.sourceEvent.clientX, d3.event.sourceEvent.clientY];
-        console.log(brush_p1);
-      }
-
-      function brushing (){
-        console.log("IN BRUSHING");
-        console.log(d3.event);
+        //console.log(brush_p1);
       }
 
 
       var toggle = document.getElementById("brushToggle"),
         isSelect = false;
-
+      // Toggle for the brush select
       toggle.onclick = function () {
         isSelect = !isSelect;
         if (isSelect) {
@@ -299,39 +352,47 @@ export class CanvasComponent implements OnInit {
 
       var currentTransform;
 
+
      // svg.select(".brush").call(brush.move, null);//cancels out brush i think, use atger / before model
       function brushended() {
-        console.log("IN BRUSHEND");
-        console.log(d3.event);
+
+        //console.log("IN BRUSHEND");
+        //console.log(d3.event);
         var s = d3.event.selection,
           x0 = s[0][0],
           y0 = s[0][1],
           x1 = s[1][0],
           y1 = s[1][1];
 
-        // console.log(s[0]);
-        // console.log(s[1]);
+        // //console.log(s[0]);
+        // //console.log(s[1]);
 
         brush_p2 = [d3.event.sourceEvent.clientX, d3.event.sourceEvent.clientY];
-        console.log(brush_p2);
+        //console.log(brush_p2);
 
 
-        console.log("TopLeft Point: " + brush_p1[0] + " : " + brush_p1[1]);
-        console.log("Bottom Right Point: " + brush_p2[0] + " : " + brush_p2[1]);
+        //console.log("TopLeft Point: " + brush_p1[0] + " : " + brush_p1[1]);
+        //console.log("Bottom Right Point: " + brush_p2[0] + " : " + brush_p2[1]);
 
         var transform = d3.zoomTransform(components.svg);
-        console.log("TRANSFORM");
-        console.log(transform);
-        console.log(currentTransform);
+        //console.log("TRANSFORM");
+        //console.log(transform);
+        //console.log(currentTransform);
 
-        //console.log(d3.brushSelection(d3.select(".brush").node()));
+        // If a transform has not been applied by zooming yet, need to set currentTransform
+        if (currentTransform === undefined){
+          currentTransform = transform;
+          //console.log('Current Transform: ' + currentTransform);
+        }
+
+        ////console.log(d3.brushSelection(d3.select(".brush").node()));
         var pointArr = d3.selectAll(".point")._groups[0]; // all the current points drawn
-        console.log(pointArr);
+        //console.log(pointArr);
         
         var TempArr = [];
         var svgclientOffset = $('.svgSpace').offset();
 
-        for (var x = 0; x < 300; x++) {
+        for (var x = 0; x < pointArr.length; x++) {
           
           var svgCordPnt = [parseInt(pointArr[x].attributes.cx.value), parseInt(pointArr[x].attributes.cy.value)];
           var zoomedCordPnt = currentTransform.apply(svgCordPnt);
@@ -342,23 +403,28 @@ export class CanvasComponent implements OnInit {
           if (brush_p1[0] <= clientCordPnt[0] && clientCordPnt[0] <= brush_p2[0] && brush_p1[1] <= clientCordPnt[1] 
             && clientCordPnt[1] <= brush_p2[1]) {
              TempArr.push(pointArr[x].__data__);
-             console.log("Client Cord for curr point: " + clientCordPnt);
+             ////console.log("Client Cord for curr point: " + clientCordPnt);
            }
 
         }
 
-        console.log("RESULTS");
-        console.log(TempArr);
+        this.currSelected = TempArr;
+        //console.log(TempArr);
 
-        if (!d3.event.selection) {
-          // histoarea.attr("d", null);
-          // histoline.attr("d", null);
-        }
+
+
+        
+        //Open Modal
+        //console.log(context);
+        context.openModal(TempArr, context);
+        
+        
       }
 
+      brushended["self"] = this;
 
       function zoomed() {
-        console.log("in zoom");
+        //console.log("in zoom");
         currentTransform = d3.event.transform;
         components.gP.attr("transform", d3.event.transform);
         components.x.call(axes.xAxis.scale(d3.event.transform.rescaleX(scales.x)));
@@ -371,6 +437,10 @@ export class CanvasComponent implements OnInit {
     };
 
 
+    Timeline.getContext = function (){
+      return this;
+    }
+
     /***
     *
     * Use the range of values in the x,y attributes
@@ -382,9 +452,9 @@ export class CanvasComponent implements OnInit {
       var domain = { x, y };
       domain.x = d3.extent(props.data, function (d) { return d[x]; });
       domain.y = d3.extent(props.data, function (d) { return d[y]; });
-      console.log("X domain:" + domain.x);
-      console.log(typeof (domain.x[2]));
-      console.log("Y domain:" + domain.y);
+      //console.log("X domain:" + domain.x);
+      //console.log(typeof (domain.x[2]));
+      //console.log("Y domain:" + domain.y);
       return domain;
     };
 
@@ -465,7 +535,7 @@ export class CanvasComponent implements OnInit {
         .attr("y", "0")//""+scales.y(5))
         .attr("height", "70px")
         .attr("width", "70px")
-        .attr("xlink:href", function (d) { // console.log(d["imageURLs"].split("@")[1]);
+        .attr("xlink:href", function (d) { // //console.log(d["imageURLs"].split("@")[1]);
           return d["imageURLs"].split("@")[1];
         })//need to separate the image urls and prep them. DID that above.
 
@@ -478,15 +548,15 @@ export class CanvasComponent implements OnInit {
         .attr("class", "point")
         .on('mouseover', function (d) {
           props["isInside" + d["_id"]] = false;
-          // console.log("In mouseover function");
+          // //console.log("In mouseover function");
           d3.select(elem).selectAll(".point").classed("active", false);
           var selection = d3.select(this);
           selection.classed("active", true);
-          console.log("IN mouseover");
-          console.log(d);
-          console.log(selection);
-          console.log(props.popup.xOffset());
-          console.log(props.popup.yOffset());
+          //console.log("IN mouseover");
+          //console.log(d);
+          //console.log(selection);
+          //console.log(props.popup.xOffset());
+          //console.log(props.popup.yOffset());
 
           g.append("rect")
             .attr("class", "popup" + d["_id"])
@@ -499,15 +569,15 @@ export class CanvasComponent implements OnInit {
             .attr("stroke", "#000");
           //             .on("mouseover", function(){
           //               props["isInside"+d["_id"]] = true;
-          //               console.log("In mouseover popup");
+          //               //console.log("In mouseover popup");
           //             })
           //             .on("mouseout", function(){
-          //               console.log("In mouseout Popup");
+          //               //console.log("In mouseout Popup");
           //               props["isInside"+d["_id"]] = false;
           // setTimeout(function(){
-          //   console.log("In settime b4 if");
+          //   //console.log("In settime b4 if");
           //   if (!props["isInside"+d["_id"]]) {
-          //     console.log("In settime after if");
+          //     //console.log("In settime after if");
           //     d3.selectAll(".popup"+d["_id"]).remove();
           //   };
           // }, 500);
@@ -522,13 +592,13 @@ export class CanvasComponent implements OnInit {
             .style("fill", function () {
               //Fills point with URL image
               if (d.imageURLs) {
-                console.log(d["_id"]);
+                //console.log(d["_id"]);
                 return ("url(#" + d["_id"] + ")");
               }
             });
           // .on("mouseover", function(){
           //   props["isInside"+d["_id"]] = true;
-          //   console.log("In mouseover popup");
+          //   //console.log("In mouseover popup");
           // });
 
           g.append("text")
@@ -539,7 +609,7 @@ export class CanvasComponent implements OnInit {
             .text(currX.substr(0, currX.length - 2) + ": " + d[currX.substr(0, currX.length - 2)]);
           // .on("mouseover", function(){
           //   props["isInside"+d["_id"]] = true;
-          //   console.log("In mouseover popup");
+          //   //console.log("In mouseover popup");
           // });
 
           g.append("text")
@@ -551,7 +621,7 @@ export class CanvasComponent implements OnInit {
             .text(currY.substr(0, currY.length - 2) + ": " + d[currY.substr(0, currY.length - 2)]);
           // .on("mouseover", function(){
           //   props["isInside"+d["_id"]] = true;
-          //   console.log("In mouseover popup");
+          //   //console.log("In mouseover popup");
           // });
 
           if (props.onMouseover) {
@@ -560,31 +630,41 @@ export class CanvasComponent implements OnInit {
         })
         .on('mouseout', function (d) {
           setTimeout(function () {
-            console.log("In settime b4 if");
+            //console.log("In settime b4 if");
             // if (!props["isInside"+d["_id"]]) {
-            console.log("In settime after if");
+            //console.log("In settime after if");
             d3.selectAll(".popup" + d["_id"]).remove();
             //clearInterval(interval);
             //}
           }, 500);
         })
         .attr("cx", function (d) {
-          // console.log("In cx positioning function");
+           //console.log("In cx positioning function");
+           //console.log(d);
+           //console.log(currX);
+           currX=currX.substring(currX.length-2)!=='_F' ? currX + '_F' : currX;
+           //console.log(currX);
           var xTemp = d[currX];
           //console.log("xTemp: " + xTemp);
+          //console.log(typeof(xTemp));
           var xPos = scales.x(xTemp);//d.y); 
           //console.log("xPos: " + xPos);
+          //console.log(scales);
           if (isNaN(xPos)) {
+            //console.log("In IF");
             return scales.x(300);
           } else {
+            //console.log("In ELSE");
             return xPos;
           }
         })
         .attr("cy", function (d) {
+
+          currY=currY.substring(currY.length-2)!=='_F' ? currY + '_F' : currY;
           var yTemp = d[currY];
-          //console.log("yTemp: " + yTemp);
+          ////console.log("yTemp: " + yTemp);
           var yPos = scales.y(yTemp);//d.y); 
-          //console.log("yPos: " + yPos);
+          ////console.log("yPos: " + yPos);
           if (isNaN(yPos)) {
             return scales.y(5);
           } else {
@@ -602,12 +682,12 @@ export class CanvasComponent implements OnInit {
         .style("fill", function (d) {
           //Fills point with URL image
           /*if (d.imageURLs) {
-            // console.log(d["_id"]);
+            // //console.log(d["_id"]);
             return ("url(#" + d["_id"] + ")");
           }*/
 
           if (props.pointFill) {
-            console.log("pointFill is defined");
+            //console.log("pointFill is defined");
             return d.color = props.pointFill;
           }
           //} else {

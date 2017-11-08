@@ -2,6 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+//import { ModalModule } from '../../node_modules/ngx-modialog';
+//import { BootstrapModalModule } from '../../node_modules/ngx-modialog/plugins/bootstrap';
+import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 
 //Components
 import { AppComponent } from './app.component';
@@ -14,6 +17,7 @@ import { CanvasComponent } from './canvas/canvas.component';
 //Services
 import { ProductsService } from './services/products.service';
 import { AxesService } from './services/axes.service';
+import { ProductModalComponent } from './product-modal/product-modal.component';
 
 const appRoutes :Routes = [
   {path : '', component : LandingPageComponent},
@@ -30,12 +34,18 @@ const appRoutes :Routes = [
     NavbarComponent,
     LandingPageComponent,
     MainPageComponent,
-    CanvasComponent
+    CanvasComponent,
+    ProductModalComponent
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
-    FormsModule
+    FormsModule,
+    //ModalModule.forRoot(),
+    BootstrapModalModule
+  ],
+  entryComponents: [
+    ProductModalComponent
   ],
   providers: [
     ProductsService,
