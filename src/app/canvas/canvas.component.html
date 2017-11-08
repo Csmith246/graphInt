@@ -1,13 +1,26 @@
 <div class="row justify-content-center">
   <div class="spacer">
-    <h6>History Tracker</h6>  <!--NGFOR here for some list of current history-->
+    <div class="row justify-content-center">
+      <!--NGFOR here for some list of current history.... PAST ME THIS IS EXACTLY WHAT I DID WEEEEEEEEEEEEE!!!-->
+      <h6>History Tracker:</h6>
+    </div>
+    <div class="row">
+      <div class="row" *ngFor="let axesPair of axesHistoryList; let i = index">
+        <div class="col special-pad"  *ngIf="i >= 1">
+          <img class="inliney" src="../../assets/right-arrow.svg" alt="" height="20px" width="20px">
+        </div>
+        <div class="col">
+          <button class="btn btn-primary btn-block inliney" (click)="goToDepth(i)">{{axesPair["x"]}} X {{axesPair["y"]}}</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <div class="row">
 
   <div class="col-1 trans-down">
     <div class="rotated">
-      <h5>{{this.axes["y-axis"]}}</h5>
+      <h6>{{this.axes["y-axis"]}}</h6>
     </div>
   </div>
 
@@ -37,7 +50,7 @@
 </div>
 
 <!-- Modal -->
- 
+
 <!-- <div class="mymodal myfade" id="myModal">
   <div class="mymodal-dialog">
     <div class="modal-content">

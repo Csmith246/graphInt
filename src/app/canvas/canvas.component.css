@@ -35,6 +35,19 @@
     padding-top: 20px;
 }
 
+.inliney{
+    display: inline;
+}
+
+.special-pad{
+    margin-left: 15px;
+    padding-right: 0px; 
+}
+
+.overflowY{
+    overflow-x: scroll;
+}
+
   /* @media (min-width: 768px) {
     .modal-xl {
       width: 100%;

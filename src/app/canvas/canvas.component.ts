@@ -9,17 +9,16 @@ TODO:
   - need to figure out how to default main-page's select boxes to the values picked on landing page
 
 
-2. Have on the sidebar, ordinal attributes, (also probably scale attributes as well)
+2. sidebar, 
 
 3b. What to do when ? is a value for one of the attr
 
-4. Work on binning and then on the product selection overlays that come up when bins are clicked on
+Other issues to fix:
+-'_F' refactor code to do better
+-axes service - maybe refactor code to make it so all axes changes go through axes service? idk
+-use of axes, and axes and axs naming is confusing
+- handle overflow of History Tracker off screen elegantly
 
-
-
-Revised TODO:
-2a. Product selection overlay
-2b. Brush select
 */
 
 
@@ -44,9 +43,11 @@ import { ProductModalComponent } from '../product-modal/product-modal.component'
 })
 export class CanvasComponent implements OnInit {
 
-  products;
-  prodArray: Array<Object> = [];
+  products; //unprocessed initial products
+  prodArray: Array<Array<Object>> = [];
   axes;
+  depth = 0; //how many selections and then new attributes have happened
+  axesHistoryList = [];
 
   currSelected = [];
 
@@ -65,6 +66,10 @@ export class CanvasComponent implements OnInit {
       this.processProducts();
 
       this.axes = axs.getAxes();
+
+      // Initialize the history list
+      this.axesHistoryList.push({"x":this.axes["x-axis"],
+                                    "y":this.axes["y-axis"]});
 
       //console.log("Right before Canvas Setup");
 
@@ -94,15 +99,11 @@ export class CanvasComponent implements OnInit {
 
   }
 
-  setupModal(){
-    //console.log("IN SETUP MODAL");
-    //console.log(this.currSelected);
-  }
 
   /* Opens the modal and responds properly to the result received from modal */
   openModal(products, context){
 
-    //Disables Scrolling on the html and body
+    ////Disables Scrolling on the html and body
     // $('html, body').css({
     //   overflow: 'hidden',
     //   height: '100%'
@@ -127,11 +128,24 @@ export class CanvasComponent implements OnInit {
             context.axes["x-axis"] = res[0];
             context.axes["y-axis"] = res[1];
 
+            //Add new axes to history tracker
+            this.axesHistoryList.push({"x" : res[0], "y" : res[1]});
+
+            context.prodArray.push(products); // push selected products to prodArray to track them
+            context.depth += 1;
+
             // Setup canvas
-            context.setupCanvas(res[0], res[1], products, context);
+            context.setupCanvas(res[0], res[1], context.prodArray, context);
           }
       });   
   }
+
+
+  goToDepth(targetDepth){
+    console.log(this);
+    console.log(targetDepth);
+  }
+
 
   ngOnInit() {
   }
@@ -148,11 +162,12 @@ export class CanvasComponent implements OnInit {
   }
 
   processProducts() {
-    var prodTemp = this.products.rows;
+    var prodList = this.products.rows;
 
+    var holder:Array<Object> = []; // temp holder to put all processed products
     //PREP IMPORTANT DATA ATTRIBUTES HERE AND STORE THEM IN NEW PROPERTIES TO USE
-    for (var i = 0; i < prodTemp.length; i++) {
-      var temp_prod = prodTemp[i].doc;
+    for (var i = 0; i < prodList.length; i++) {
+      var temp_prod = prodList[i].doc;
 
       temp_prod["Price_F"] = this.prepAttribute(temp_prod["Price"]);
       temp_prod["Hard Drive Capacity_F"] = this.prepAttribute(temp_prod["Hard Drive Capacity"]);
@@ -179,9 +194,12 @@ export class CanvasComponent implements OnInit {
       // //console.log(temp_prod["Depth_F"]);
       // //console.log(temp_prod["Weight_F"]);
 
-
-      this.prodArray.push(temp_prod);
+      holder.push(temp_prod);
+      
     }
+    
+    this.prodArray.push(holder);
+
     //console.log(this.prodArray);
   }
 
@@ -212,7 +230,7 @@ export class CanvasComponent implements OnInit {
       axisBuffer: 40,
 
       // data inputs
-      data: currProds, // MIGHT NEED TO ABSTRACT THIS TO DO PRODUCT SUBSETS
+      data: currProds[context.depth], // MIGHT NEED TO ABSTRACT THIS TO DO PRODUCT SUBSETS
 
       // y label
       yLabel: "",//"Ylabel",
@@ -245,6 +263,8 @@ export class CanvasComponent implements OnInit {
     * Create the svg canvas on which the chart will be rendered
     *
     ***/
+
+    console.log(props.data);//////////////////////////////////////////////////////////////////////////////
 
     Timeline.create = function (elem, props) {
 
