@@ -44,14 +44,16 @@ import { ProductModalComponent } from '../product-modal/product-modal.component'
 export class CanvasComponent implements OnInit {
 
   products; //unprocessed initial products
-  prodArray: Array<Array<Object>> = [];
   axes;
+
+  // Following 3 track values between depths
+  prodArray: Array<Array<Object>> = [];
   depth = 0; //how many selections and then new attributes have happened
-  axesHistoryList = [];
+  axesHistoryList = []; 
+
 
   currSelected = [];
 
-  
 
   constructor(
     public ps: ProductsService,
@@ -86,8 +88,11 @@ export class CanvasComponent implements OnInit {
         //console.log("Update done: " + val);
         this.axes = axs.getAxes();
 
+        this.axesHistoryList[this.depth]["x"] = this.axes["x-axis"];
+        this.axesHistoryList[this.depth]["y"] = this.axes["y-axis"];
+
         // Need to remove old svg //
-        var canvas = document.getElementById("canvas")
+        var canvas = document.getElementById("canvas");
         canvas.removeChild(canvas.firstChild);
 
         
@@ -103,11 +108,14 @@ export class CanvasComponent implements OnInit {
   /* Opens the modal and responds properly to the result received from modal */
   openModal(products, context){
 
-    ////Disables Scrolling on the html and body
-    // $('html, body').css({
-    //   overflow: 'hidden',
-    //   height: '100%'
-    // });
+    ////Disables Scrolling, and tints background
+    console.log($("#main-page"));
+    $("#main-page").css({
+      overflow: 'hidden',
+      height: '100%',
+      background: "#e9e9e9",
+      opacity: "0.5"
+    });
 
     let disposable = this.dialogService.addDialog(ProductModalComponent, {
       title:'Selected Laptops', 
@@ -119,9 +127,17 @@ export class CanvasComponent implements OnInit {
           //console.log(products);
           console.log(context);
 
+          // Reenables scrolling and gets rid of background tint
+          $("#main-page").css({
+            overflow: '',
+            height: '',
+            background: "",
+            opacity: ""
+          });
+
           //Remove current svg, if 2 new attributes were picked
           if(res !== undefined){
-            var canvas = document.getElementById("canvas")
+            var canvas = document.getElementById("canvas");
             canvas.removeChild(canvas.firstChild);
 
             // Update axes
@@ -140,10 +156,25 @@ export class CanvasComponent implements OnInit {
       });   
   }
 
-
+/** Return the display to the targetdepth */
   goToDepth(targetDepth){
     console.log(this);
     console.log(targetDepth);
+
+    var canvas = document.getElementById("canvas");
+    canvas.removeChild(canvas.firstChild);
+
+    this.axes["x-axis"] = this.axesHistoryList[targetDepth]["x"];
+    this.axes["y-axis"] = this.axesHistoryList[targetDepth]["y"];
+
+    this.axesHistoryList = this.axesHistoryList.slice(0,targetDepth+1);
+
+    this.depth = targetDepth;
+
+    this.prodArray = this.prodArray.slice(0,targetDepth+1);
+
+    this.setupCanvas(this.axes["x-axis"], this.axes["y-axis"], this.prodArray, this);
+
   }
 
 
@@ -230,7 +261,7 @@ export class CanvasComponent implements OnInit {
       axisBuffer: 40,
 
       // data inputs
-      data: currProds[context.depth], // MIGHT NEED TO ABSTRACT THIS TO DO PRODUCT SUBSETS
+      data: currProds[context.depth],
 
       // y label
       yLabel: "",//"Ylabel",

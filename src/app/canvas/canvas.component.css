@@ -107,3 +107,10 @@
         margin: 30px auto;
     }
 }
+
+.bordero{
+    width: 55%;
+    border-bottom-style: solid;
+    height: 1px;
+    padding-top: 10px;
+}
