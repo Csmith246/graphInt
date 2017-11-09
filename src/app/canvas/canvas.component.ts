@@ -6,6 +6,18 @@
 
 /*
 TODO:
+
+FOR TONIGHT:
+1. Fix graph mouse over - make it better...
+Maybe - under 100 products use a product picture on the graph... Seems a little trick, 
+but maybe... might be just an if-else with the code that generates
+the points
+
+
+
+
+
+
   - need to figure out how to default main-page's select boxes to the values picked on landing page
 
 
@@ -53,6 +65,22 @@ export class CanvasComponent implements OnInit {
 
 
   currSelected = [];
+
+
+
+  units = {
+    "Price" : "USD",
+    "Hard Drive Capacity" : "GB",
+    "Processor Speed" : "GHz",
+    "System Memory(RAM)" : "GB",
+    "Battery Life" : "Hours",
+    "Screen Size" : "Inches",
+    "Height" : "Inches",
+    "Width" : "Inches",
+    "Depth" : "Inches",
+    "Weight" : "Inches"
+  };
+
 
 
   constructor(
@@ -108,52 +136,57 @@ export class CanvasComponent implements OnInit {
   /* Opens the modal and responds properly to the result received from modal */
   openModal(products, context){
 
-    ////Disables Scrolling, and tints background
-    console.log($("#main-page"));
-    $("#main-page").css({
-      overflow: 'hidden',
-      height: '100%',
-      background: "#e9e9e9",
-      opacity: "0.5"
-    });
+    //if the selection actually contains products
+    if(products.length !== 0){
 
-    let disposable = this.dialogService.addDialog(ProductModalComponent, {
-      title:'Selected Laptops', 
-      message:'Confirm message',
-      productList:products
-    })
-      .subscribe((res)=>{
-          //console.log(res);
-          //console.log(products);
-          console.log(context);
+      ////Disables Scrolling, and tints background
+      console.log($("#main-page"));
+      $("#main-page").css({
+        overflow: 'hidden',
+        height: '100%',
+        background: "#e9e9e9",
+        opacity: "0.5"
+      });
 
-          // Reenables scrolling and gets rid of background tint
-          $("#main-page").css({
-            overflow: '',
-            height: '',
-            background: "",
-            opacity: ""
-          });
-
-          //Remove current svg, if 2 new attributes were picked
-          if(res !== undefined){
-            var canvas = document.getElementById("canvas");
-            canvas.removeChild(canvas.firstChild);
-
-            // Update axes
-            context.axes["x-axis"] = res[0];
-            context.axes["y-axis"] = res[1];
-
-            //Add new axes to history tracker
-            this.axesHistoryList.push({"x" : res[0], "y" : res[1]});
-
-            context.prodArray.push(products); // push selected products to prodArray to track them
-            context.depth += 1;
-
-            // Setup canvas
-            context.setupCanvas(res[0], res[1], context.prodArray, context);
-          }
-      });   
+    
+      let disposable = this.dialogService.addDialog(ProductModalComponent, {
+        title:'Selected Laptops', 
+        message:'Confirm message',
+        productList:products
+      })
+        .subscribe((res)=>{
+            //console.log(res);
+            //console.log(products);
+            console.log(context);
+  
+            // Reenables scrolling and gets rid of background tint
+            $("#main-page").css({
+              overflow: '',
+              height: '',
+              background: "",
+              opacity: ""
+            });
+  
+            //Remove current svg, if 2 new attributes were picked
+            if(res !== undefined){
+              var canvas = document.getElementById("canvas");
+              canvas.removeChild(canvas.firstChild);
+  
+              // Update axes
+              context.axes["x-axis"] = res[0];
+              context.axes["y-axis"] = res[1];
+  
+              //Add new axes to history tracker
+              this.axesHistoryList.push({"x" : res[0], "y" : res[1]});
+  
+              context.prodArray.push(products); // push selected products to prodArray to track them
+              context.depth += 1;
+  
+              // Setup canvas
+              context.setupCanvas(res[0], res[1], context.prodArray, context);
+            }
+        });
+      }   
   }
 
 /** Return the display to the targetdepth */
@@ -211,7 +244,6 @@ export class CanvasComponent implements OnInit {
       temp_prod["Depth_F"] = this.prepAttribute(temp_prod["Depth"]);
       temp_prod["Weight_F"] = this.prepAttribute(temp_prod["Weight"]);
       temp_prod["_imageURLs"] = temp_prod["imageURLs"].split("@")[1];
-
 
       // //console.log(temp_prod["Price_F"]);
       // //console.log(temp_prod["Hard Drive Capacity_F"]);
