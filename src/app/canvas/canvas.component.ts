@@ -419,13 +419,30 @@ export class CanvasComponent implements OnInit {
           var clientCordPnt = [zoomedCordPnt[0] + svgclientOffset.left, zoomedCordPnt[1] + svgclientOffset.top];
 
           
-
-          if (brush_p1[0] <= clientCordPnt[0] && clientCordPnt[0] <= brush_p2[0] && brush_p1[1] <= clientCordPnt[1] 
-            && clientCordPnt[1] <= brush_p2[1]) {
-             TempArr.push(pointArr[x].__data__);
-             ////console.log("Client Cord for curr point: " + clientCordPnt);
-           }
-
+          
+          if(brush_p1[0]<brush_p2[0] && brush_p1[1]<brush_p2[1]){ // brush_p1's vals are both less than brush_p2 vals
+            if (brush_p1[0] <= clientCordPnt[0] && clientCordPnt[0] <= brush_p2[0] && brush_p1[1] <= clientCordPnt[1] 
+              && clientCordPnt[1] <= brush_p2[1]) {
+               TempArr.push(pointArr[x].__data__);
+             }
+          }else if(brush_p1[0]>brush_p2[0] && brush_p1[1]<brush_p2[1]){ //1's x is greater than 2's x
+            if (brush_p1[0] >= clientCordPnt[0] && clientCordPnt[0] >= brush_p2[0] && brush_p1[1] <= clientCordPnt[1] 
+              && clientCordPnt[1] <= brush_p2[1]) {
+               TempArr.push(pointArr[x].__data__);
+             }
+          }else if(brush_p1[0]<brush_p2[0] && brush_p1[1]>brush_p2[1]){ // 1's y is greater than 2's y
+            if (brush_p1[0] <= clientCordPnt[0] && clientCordPnt[0] <= brush_p2[0] && brush_p1[1] >= clientCordPnt[1] 
+              && clientCordPnt[1] >= brush_p2[1]) {
+               TempArr.push(pointArr[x].__data__);
+             }
+          }else if(brush_p1[0]>brush_p2[0] && brush_p1[1]>brush_p2[1]){ // brush_p1's vals are both greater than brush_p2 vals
+            if (brush_p1[0] >= clientCordPnt[0] && clientCordPnt[0] >= brush_p2[0] && brush_p1[1] >= clientCordPnt[1] 
+              && clientCordPnt[1] >= brush_p2[1]) {
+               TempArr.push(pointArr[x].__data__);
+             }
+          }else{
+            console.log("Unaccounted for case: Point 1 = " + brush_p1 + " Point 2 = " + brush_p2);
+          }
         }
 
         this.currSelected = TempArr;
