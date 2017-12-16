@@ -30,6 +30,7 @@ Other issues to fix:
 -axes service - maybe refactor code to make it so all axes changes go through axes service? idk
 -use of axes, and axes and axs naming is confusing
 - handle overflow of History Tracker off screen elegantly
+- encapsulate dialog calls into a custom function so that the background changes can be taken care of in that function
 
 */
 
@@ -44,6 +45,8 @@ import { ProductsService } from '../services/products.service';
 import { AxesService } from '../services/axes.service';
 import { DialogService } from "ng2-bootstrap-modal";
 import { ProductModalComponent } from '../product-modal/product-modal.component';
+import { OneProdModalComponent } from '../one-prod-modal/one-prod-modal.component';
+
 //import { Overlay } from 'ngx-modialog';
 //import { Modal } from 'ngx-modialog/plugins/bootstrap';
 
@@ -646,6 +649,34 @@ export class CanvasComponent implements OnInit {
       point.enter()
         .append("circle")
         .attr("class", "point")
+        .on('click', function(d){
+          console.log(d);
+
+          ////Disables Scrolling, and tints background
+          console.log($("#main-page"));
+          $("#main-page").css({
+            overflow: 'hidden',
+            height: '100%',
+            background: "#e9e9e9",
+            opacity: "0.5"
+          });
+
+          let disposable = context.dialogService.addDialog(OneProdModalComponent, { product:d })
+            .subscribe((res)=>{
+                //console.log(res);
+                //console.log(products);
+                console.log(context);
+      
+                // Reenables scrolling and gets rid of background tint
+                $("#main-page").css({
+                  overflow: '',
+                  height: '',
+                  background: "",
+                  opacity: ""
+                });
+            });
+
+        })
         .on('mouseover', function (d) {
           props["isInside" + d["_id"]] = false;
           // //console.log("In mouseover function");
@@ -729,14 +760,14 @@ export class CanvasComponent implements OnInit {
           };
         })
         .on('mouseout', function (d) {
-          setTimeout(function () {
+          // setTimeout(function () {
             //console.log("In settime b4 if");
             // if (!props["isInside"+d["_id"]]) {
             //console.log("In settime after if");
             d3.selectAll(".popup" + d["_id"]).remove();
             //clearInterval(interval);
             //}
-          }, 500);
+          // }, 500);
         })
         .attr("cx", function (d) {
            //console.log("In cx positioning function");

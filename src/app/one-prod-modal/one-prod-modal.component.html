@@ -1,0 +1,32 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" (click)="close()">&times;</button>
+      <h4 class="modal-title">Selected Laptop</h4>
+    </div>
+    <div class="modal-body">
+      <div class="row justify-content-center" id="mainPic">
+        <div>
+          <img src="{{this.imageURLArr[this.currPic]}}" alt="">
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <img src="../../assets/picLeftArrow.png" alt="" (click)=leftArrow()>
+        <p id="counter">Picture {{this.currPic + 1}} of {{this.imageURLArr.length}}</p>
+        <img src="../../assets/picRightArrow.png" alt="" (click)=rightArrow()>
+      </div>
+      <div class="row">
+        <h2 class="prodAttrs">{{this.product["Product Name"]}}</h2>
+        <p class="prodAttrs"><strong>Short-Description</strong>: {{this.product["Short-Description"]}}</p>
+      </div>
+      <h3 class="row prodAttrs">Key Attributes</h3>
+      <div class="row">
+        <ul class="prodAttrs" id="keyPoint"></ul>
+      </div>
+      <h3 class="row prodAttrs">General Attributes</h3>
+      <div class="row">
+        <ul class="prodAttrs" id="insertionPoint"></ul>
+      </div>
+    </div>
+  </div>
+</div>

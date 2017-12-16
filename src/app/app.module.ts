@@ -18,6 +18,7 @@ import { CanvasComponent } from './canvas/canvas.component';
 import { ProductsService } from './services/products.service';
 import { AxesService } from './services/axes.service';
 import { ProductModalComponent } from './product-modal/product-modal.component';
+import { OneProdModalComponent } from './one-prod-modal/one-prod-modal.component';
 
 const appRoutes :Routes = [
   {path : '', component : LandingPageComponent},
@@ -35,7 +36,8 @@ const appRoutes :Routes = [
     LandingPageComponent,
     MainPageComponent,
     CanvasComponent,
-    ProductModalComponent
+    ProductModalComponent,
+    OneProdModalComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +47,8 @@ const appRoutes :Routes = [
     BootstrapModalModule
   ],
   entryComponents: [
-    ProductModalComponent
+    ProductModalComponent,
+    OneProdModalComponent
   ],
   providers: [
     ProductsService,

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DialogComponent, DialogService } from "ng2-bootstrap-modal";
+import { OneProdModalComponent } from '../one-prod-modal/one-prod-modal.component';
 
 export interface ConfirmModel {
   title:string;
@@ -52,6 +53,11 @@ export class ProductModalComponent extends DialogComponent<ConfirmModel, Array<S
   ngOnInit() {
     console.log('IN on init');
     console.log(this.productList);
+  }
+
+  openProdPage(product){
+    console.log(product);
+    let disposable = this.dialogService.addDialog(OneProdModalComponent, { product:product })
   }
 
 }
